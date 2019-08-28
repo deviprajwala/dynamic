@@ -16,6 +16,10 @@ void spiral(int a[50][50],int rowmin,int rowmax,int colmin,int colmax,int n)
    {
     
     printf("%d ",a[rowmin][j]);
+    if(matrix[rowmin][j]==999)
+    {
+         continue;
+    }
     matrix[rowmin][j]=value(rowmin,j);
 
   
@@ -26,6 +30,10 @@ void spiral(int a[50][50],int rowmin,int rowmax,int colmin,int colmax,int n)
    {
     
     printf("%d ",a[i][colmax]);
+    if(matrix[i][colmax]==999)
+    {
+         continue;
+    }
     matrix[i][colmax]=value(i,colmax);
     
    }
@@ -37,6 +45,10 @@ if(rowmin<rowmax)
    {
     
     printf("%d ",a[rowmax][j]);
+    if(matrix[rowmax][j]==999)
+    {
+         continue;
+    }
     matrix[rowmax][j]=value(rowmax,j);
    
    }
@@ -48,6 +60,10 @@ if(colmin<colmax)
    {
     
     printf("%d ",a[i][colmin]);
+    if(matrix[i][colmin]==999)
+    {
+         continue;
+    }
     matrix[i][colmin]=value(i,colmin);
     
    }
@@ -73,14 +89,48 @@ else
 
 int value(int x,int y)
 {
- int val;
+ int val,r,s,t,u;
  if(x==0||x==n-1||y==0||y==n-1)
  {
   return 1;
  }
  else
 {
- val=min((1+matrix[x+1][y]),(1+matrix[x-1][y]),(1+matrix[x][y+1]),(1+matrix[x][y-1]));
+ if(matrix[x+1][y]==999)
+ {
+  r=999;
+ }
+ else
+ {
+ r=(1+matrix[x+1][y]);
+ }
+ if(matrix[x-1][y]==999)
+ {
+  s=999;
+ }
+ else
+ {
+ s=(1+matrix[x-1][y]);
+ }
+ if(matrix[x][y+1]==999)
+ {
+  t=999;
+ }
+ else
+ {
+ t=(1+matrix[x][y+1]);
+ }
+ if(matrix[x][y-1]==999)
+ {
+  u=999;
+ }
+ else
+ {
+ u=(1+matrix[x][y-1]);
+ }
+ 
+ val=min(r,s,t,u);
+ 
  return val;
 }
 }
@@ -126,14 +176,24 @@ void initialise()
  {
   for(j=0;j<n;j++)
   {
-    matrix[i][j]=999;
+    matrix[i][j]=99;
   }
  }
+ matrix[0][1]=999;
+ matrix[1][2]=999; //intialising the explosives as 999
+ matrix[2][3]=999;
+ matrix[3][4]=999;
+ matrix[4][5]=999;
+ matrix[5][6]=999;
+ matrix[6][7]=999;
+ matrix[7][8]=999;
+ matrix[8][9]=999;
+
 }
 
 void main()
 {
- int a[50][50],i,j,count=1,rowmin=0,rowmax=n-1,colmax=n-1,colmin=0,continuee=0,continuee1,xindex,yindex;
+ int a[50][50],i,j,count=1,rowmin=0,rowmax=n-1,colmax=n-1,colmin=0,continuee=0,continuee1,xindex,yindex,dist;
  printf("The matrix is\n");
  for(i=0;i<n;i++)
   {
@@ -146,8 +206,10 @@ void main()
    printf("\n");
   }
   initialise();
+  
   printf("The spiral traversal is\n");
   spiral(a,rowmin,rowmax,colmin,colmax,n);
+  printf("The position with 999 is explosive\n");
   printf("The weighted distance matrix is\n");
   print_matrix(matrix);
   while(continuee==0)
@@ -159,7 +221,19 @@ void main()
    printf("Enter valid position\n");
    break;
   }
-  printf("Least distance is %d\n",matrix[xindex][yindex]);
+  dist=matrix[xindex][yindex];
+  if(dist==999)
+  {
+  printf("There is an explosive in the given position\n");
+  }
+  else if(matrix[xindex+1][yindex]==999&&matrix[xindex-1][yindex]==999&&matrix[xindex][yindex+1]==999&&matrix[xindex][yindex-1]==999)
+  {
+   printf("No possible moves\n");
+  }
+  else
+  {
+  printf("Least distance is %d\n",dist);
+  }
   printf("Enter 0 to continue 1 to exit\n");
   scanf("%d",&continuee1);
   continuee=continuee1;
